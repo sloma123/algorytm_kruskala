@@ -154,7 +154,7 @@ void create_trees(Line* head) {
 	Line* current_line = new Line();
 	current_line = head;
 	if(current_line->begin_point == current_line->Next->begin_point){
-
+		//komentarz sprawdzam
 		tree->Next->tree_num = tree_num;
 	}
 }
