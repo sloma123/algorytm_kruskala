@@ -1,7 +1,8 @@
 ﻿#include <iostream>
 #include <cstdlib>
 using namespace std;
-
+const int ARR_MAX = 1000;
+const int TREE_MAX = 1000;
 struct Line {
 	int begin_point;
 	int end_point;
@@ -18,6 +19,7 @@ void add_line(Line*);
 Line* sort(Line* line);
 void create_trees(Line*);
 void merge_trees(Line*);
+void compare_trees(Line*, Line*, int[TREE_MAX][ARR_MAX], int&);
 
 int main(){
 	welcome();
@@ -149,18 +151,42 @@ Line* sort(Line* line) {
 }
 
 void create_trees(Line* head) {
-	int tree_num = 1;
+	int tree_num = 0;
 	head->tree_num = tree_num;
 	Line* current_line = new Line();
-	current_line = head;
-	if(current_line->begin_point == current_line->Next->begin_point){
-		//komentarz sprawdzam
-		tree->Next->tree_num = tree_num;
-	}
+	current_line = head->Next;
+	int trees_arr[TREE_MAX][ARR_MAX];//tablica[numer drzewa][punkty w drzewie]
+	trees_arr[tree_num][0] = head->begin_point;
+	trees_arr[tree_num][1] = head->end_point;//drzewo 0, pierwsze dwa elementy to punkty heada
+	compare_trees(head, current_line, trees_arr, tree_num);
+
 }
 
+void compare_trees(Line* head, Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int& tree_num) {
+	//begin
+	bool added = false;
+	for (int i = 0; i <= tree_num; i++) {
+		for (int j = 0; j < ARR_MAX; j++) {
+			if (current_line->begin_point == trees_arr[i][j]) {//dodać licznik punktów w drzewie
+				current_line->tree_num = i;
 
+				added = true;
+				//sprawdzenie czy punkt łączy dwa drzewa
+
+			}
+		}
+	}
+
+
+
+
+	if (added = false) {
+		tree_num++;
+		current_line->tree_num = tree_num;
+		trees_arr[tree_num][0] = current_line->begin_point;
+		trees_arr[tree_num][1] = current_line->end_point;//cos ze sztywnymi zmienic?
+	}
+}
 void merge_trees(Line*){
-
 	
 }
