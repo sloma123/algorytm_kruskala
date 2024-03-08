@@ -3,6 +3,7 @@
 using namespace std;
 const int ARR_MAX = 1000;
 const int TREE_MAX = 1000;
+
 struct Line {
 	int begin_point;
 	int end_point;
@@ -19,7 +20,7 @@ void add_line(Line*);
 Line* sort(Line* line);
 void create_trees(Line*);
 void merge_trees(Line*);
-void compare_trees(Line*, Line*, int[TREE_MAX][ARR_MAX], int&, int[ARR_MAX]);
+void compare_trees(const Line*, Line*, int[TREE_MAX][ARR_MAX], int&, int[ARR_MAX]);
 int is_point_merging(Line*, int [TREE_MAX][ARR_MAX], int&, int[ARR_MAX], bool);
 void add_points(Line*, int[TREE_MAX][ARR_MAX], int[ARR_MAX], int);
 
@@ -161,23 +162,27 @@ void create_trees(Line* head) {
 	int points_count[ARR_MAX];//licznik ilosci punktów w drzewie points_count[drzewo]=aktualna ilosc punktow
 	trees_arr[tree_num][0] = head->begin_point;
 	trees_arr[tree_num][1] = head->end_point;//drzewo nr 0, pierwsze dwa elementy to punkty heada
-	points_count[tree_num] = 2;
+	points_count[tree_num] = 2;//0 i 1
+
 	compare_trees(head, current_line, trees_arr, tree_num, points_count);//to trzeba jakoś podać żeby każdą line sprawdziło
 
 }
 
-void compare_trees(Line* head, Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int& tree_num, int points_count[ARR_MAX]) {
+void compare_trees(const Line* head, Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int& tree_num, int points_count[ARR_MAX]) {
 	//begin
 	bool added = false;
-	bool is_begin = false;
+	bool is_begin = false; //przekazuje czy punkt początkowy jest w tablicy czy nie
 	for (int i = 0; i <= tree_num; i++) {
 		for (int j = 0; j < points_count[i]; j++) {
 			if (current_line->begin_point == trees_arr[i][j]) {
-				current_line->tree_num = i;
+				//current_line->tree_num = i;
 				added = true;
 				is_begin = true;
 				int a = is_point_merging(current_line, trees_arr, tree_num, points_count, is_begin);
 				if (a == i) {
+					
+				}
+				else if (a == -1) {
 					add_points(current_line, trees_arr, points_count, i);//dodanie do drzewa
 				}
 				else {
@@ -190,18 +195,21 @@ void compare_trees(Line* head, Line* current_line, int trees_arr[TREE_MAX][ARR_M
 		}
 	}
 	//end
-	if (added = false) {
+	if (added == false) {
 		for (int i = 0; i <= tree_num; i++) {
 			for (int j = 0; j < points_count[i]; j++) {
 				if (current_line->end_point == trees_arr[i][j]) {
-					current_line->tree_num = i;
+					//current_line->tree_num = i; 
 					added = true;
 					int a = is_point_merging(current_line, trees_arr, tree_num, points_count, is_begin);
-					if (a == i) {
+					if (a == i) {//CYKKLE JEBANE
+						
+					}
+					else if(a ==-1){
 						add_points(current_line, trees_arr, points_count, i);
 					}
 					else {
-						//merge_trees();
+					//merge_trees();
 					}
 					//sprawdzenie czy punkt łączy dwa drzewa
 					//tak-merge_trees, nie- dodanie do drzewa
@@ -211,12 +219,12 @@ void compare_trees(Line* head, Line* current_line, int trees_arr[TREE_MAX][ARR_M
 		}
 	}
 
-	if (added = false) {// tworzenie nowego drzewa
+	if (added == false) {// tworzenie nowego drzewa
 		tree_num++;
-		current_line->tree_num = tree_num;
+		//current_line->tree_num = tree_num;
 		trees_arr[tree_num][0] = current_line->begin_point;
 		trees_arr[tree_num][1] = current_line->end_point;//cos ze sztywnymi zmienic?
-		points_count[tree_num] = 1;//0 i 1
+		points_count[tree_num] = 2;//do spraawdzenia czy dziala
 	}
 }
 
@@ -235,19 +243,21 @@ int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int& 
 			for (int j = 0; j < points_count[i]; j++) {
 				if (current_line->begin_point == trees_arr[i][j]) {
 					return i;
-				}
+				} 
 			}
 		}
 	}
+	return -1;
+
 }
 
-void merge_trees(Line*){
+void merge_trees(Line*){ 
 	
 
 }
 
 void add_points(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num) {
-	trees_arr[tree_num][points_count[tree_num + 1]] = current_line->begin_point;
+	trees_arr[tree_num][points_count[tree_num + 1]] = current_line->begin_point;//punkty jeszcze nie są w tablicy, jakiś bool żeby wiedzieć begin czy end
 	trees_arr[tree_num][points_count[tree_num + 2]] = current_line->end_point;
 	points_count[tree_num] = points_count[tree_num] + 2;
 }
