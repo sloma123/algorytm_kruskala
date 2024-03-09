@@ -1,14 +1,14 @@
 ﻿#include <iostream>
 #include <cstdlib>
 using namespace std;
-const int ARR_MAX = 1000;
-const int TREE_MAX = 1000;
+const int ARR_MAX = 100;
+const int TREE_MAX = 100;
 
 struct Line {
-	int begin_point;
-	int end_point;
-	int weight;
-	int tree_num;
+	int begin_point=-2;
+	int end_point=-2;
+	int weight=-2;
+	int tree_num = -2;
 	Line* Next;
 };
 
@@ -54,12 +54,15 @@ void menu() {
 	add_line(head);
 	int x = counter(head);
 	head = sort(head, x);
-	create_trees(head, x);
-	Line* i = head;
+	Line* i = new Line();
+	i = head;
 	while (i != NULL) {
 		cout << i->weight << endl;
 		i = i->Next;
-	}
+	}cout << endl;
+	cout << endl;
+	create_trees(head, x);
+	
 }
 
 
@@ -173,6 +176,9 @@ void create_trees(Line* head, const int counter) {
 	for (int i = 0; i <= counter; i++) {
 		compare_trees(head, current_line, trees_arr, tree_num, points_count);
 		current_line = current_line->Next;
+	}
+	for (int i = 0; i < points_count[0]; i++) {
+		cout << trees_arr[0][i] << " ";
 	}
 }
 
