@@ -173,7 +173,7 @@ void create_trees(Line* head, const int counter) {
 	trees_arr[tree_num][1] = head->end_point;//drzewo nr 0, pierwsze dwa elementy to punkty heada
 	points_count[tree_num] = 2;//1 i 2
 	sum+= head->weight; 
-	for (int i = 0; i <= counter; i++) {
+	for (int i = 1; i < counter; i++) {
 		compare_trees(head, current_line, trees_arr, tree_num, points_count);
 		current_line = current_line->Next;
 	}
