@@ -5,9 +5,9 @@ const int ARR_MAX = 100;
 const int TREE_MAX = 100;
 
 struct Line {
-	int begin_point=-2;
-	int end_point=-2;
-	int weight=-2;
+	int begin_point = -2;
+	int end_point = -2;
+	int weight = -2;
 	int tree_num = -2;
 	Line* Next;
 };
@@ -62,7 +62,7 @@ void menu() {
 	}cout << endl;
 	cout << endl;
 	create_trees(head, x);
-	
+
 }
 
 
@@ -109,17 +109,17 @@ Line* create_line(Line* line) {
 	return new_line;
 
 }
-int counter(Line* line){
-	
+int counter(Line* line) {
+
 	int counter = 0;
 	while (line != NULL) {
-			counter++;
-			line = line->Next;
+		counter++;
+		line = line->Next;
 	} //liczy ile jest linii w liście jednokierunkowej
 	return counter;
 }
 
-Line* sort(Line* line,const int counter) {
+Line* sort(Line* line, const int counter) {
 
 	Line* h = line;
 	Line* head = line;
@@ -172,7 +172,7 @@ void create_trees(Line* head, const int counter) {
 	trees_arr[tree_num][0] = head->begin_point;
 	trees_arr[tree_num][1] = head->end_point;//drzewo nr 0, pierwsze dwa elementy to punkty heada
 	points_count[tree_num] = 2;//1 i 2
-	sum+= head->weight; 
+	sum += head->weight;
 	for (int i = 1; i < counter; i++) {
 		compare_trees(head, current_line, trees_arr, tree_num, points_count);
 		current_line = current_line->Next;
@@ -270,69 +270,88 @@ int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int& 
 void merge_trees(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2) {
 
 	//bool added_to_one_tree = false; 
-	if(tree_num_1 > tree_num_2){
-		for (int i = 0; i < points_count[tree_num_2]; i++){ //sprawdza dla dzrewa o mnijszej liczbie punktów
+	int counting2 = points_count[tree_num_2];
+	int counting1 = points_count[tree_num_1];
+
+	if (tree_num_1 > tree_num_2) {
+		for (int i = 0; i < points_count[tree_num_2]; i++) { //sprawdza dla dzrewa o mnijszej liczbie punktów
 			for (int j = 0; j < points_count[tree_num_1]; j++) { //sprawdza dla drzewa o wiekszej liczbie punktów
 
 				if (current_line->end_point == trees_arr[tree_num_1][j] && current_line->begin_point == trees_arr[tree_num_2][i]) { // sprawdza, który punkt jest w jakim drzewie
 					trees_arr[tree_num_2][points_count[tree_num_2]] = trees_arr[tree_num_1][j]; // dodaje punkt z drzewa o wiekszym indeksie do drzewa o mniejszym indeksie
-					for(int k = 1; k<=points_count[tree_num_1]; k++){
-						
-						if(trees_arr[tree_num_2][points_count[tree_num_2 + k]] == trees_arr[tree_num_1][j]){ // jesli jest ten punkt to idzie dalej
+					points_count[tree_num_2]++;
+					for (int k = 0; k < points_count[tree_num_1]; k++) {
+
+						if (trees_arr[tree_num_2][counting2 + k] == trees_arr[tree_num_1][j]) { // jesli jest ten punkt to idzie dalej
 							continue;
 						}
 						else
-							trees_arr[tree_num_2][points_count[tree_num_2 + k]] = trees_arr[tree_num_1][points_count[k-1]]; //dodaje punkty z drzewa o wiekszym indeksie do drzewa o mniejszym
+						{
+							trees_arr[tree_num_2][counting2 + k] = trees_arr[tree_num_1][k]; //dodaje punkty z drzewa o wiekszym indeksie do drzewa o mniejszym
+							points_count[tree_num_2]++;
+						}
 					}
 					return;
 				}
 				else if (current_line->end_point == trees_arr[tree_num_2][i] && current_line->begin_point == trees_arr[tree_num_1][j]) {
 					trees_arr[tree_num_2][points_count[tree_num_2]] = trees_arr[tree_num_1][j];
-					for (int k = 1; k <= points_count[tree_num_1]; k++) {
+					points_count[tree_num_2]++;
+					for (int k = 0; k < points_count[tree_num_1]; k++) {
 
-						if (trees_arr[tree_num_2][points_count[tree_num_2 + k]] == trees_arr[tree_num_1][j]) {
+						if (trees_arr[tree_num_2][counting2 + k] == trees_arr[tree_num_1][j]) {
 							continue;
 						}
 						else
-							trees_arr[tree_num_2][points_count[tree_num_2 + k]] = trees_arr[tree_num_1][points_count[k - 1]];
-					}
-					return;
-				}
-			}
-		}	
-	}
-	else{
-		for (int i = 0; i < points_count[tree_num_1]; i++) {
-			for (int j = 0; j < points_count[tree_num_2]; j++) {
-
-				if (current_line->end_point == trees_arr[tree_num_1][i] && current_line->begin_point == trees_arr[tree_num_2][j]) {
-					trees_arr[tree_num_1][points_count[tree_num_1]] = trees_arr[tree_num_2][j];
-					for (int k = 1; k <= points_count[tree_num_2]; k++) {
-
-						if (trees_arr[tree_num_1][points_count[tree_num_1 + k]] == trees_arr[tree_num_2][j]) {
-							continue;
+						{
+							trees_arr[tree_num_2][counting2 + k] = trees_arr[tree_num_1][k];
+							points_count[tree_num_2]++;
 						}
-						else
-							trees_arr[tree_num_1][points_count[tree_num_1 + k]] = trees_arr[tree_num_2][points_count[k - 1]];
-					}
-					return;
-				}
-				else if (current_line->end_point == trees_arr[tree_num_2][j] && current_line->begin_point == trees_arr[tree_num_1][i]) {
-					trees_arr[tree_num_1][points_count[tree_num_1]] = trees_arr[tree_num_2][j];
-					for (int k = 1; k <= points_count[tree_num_2]; k++) {
-
-						if (trees_arr[tree_num_1][points_count[tree_num_1 + k]] == trees_arr[tree_num_2][j]) {
-							continue;
-						}
-						else
-							trees_arr[tree_num_1][points_count[tree_num_1 + k]] = trees_arr[tree_num_2][points_count[k - 1]];
 					}
 					return;
 				}
 			}
 		}
 	}
-	
+	else {
+		for (int i = 0; i < points_count[tree_num_1]; i++) {
+			for (int j = 0; j < points_count[tree_num_2]; j++) {
+
+				if (current_line->end_point == trees_arr[tree_num_1][i] && current_line->begin_point == trees_arr[tree_num_2][j]) {
+					trees_arr[tree_num_1][points_count[tree_num_1]] = trees_arr[tree_num_2][j];
+					points_count[tree_num_1]++;
+					for (int k = 0; k < points_count[tree_num_2]; k++) {
+
+						if (trees_arr[tree_num_1][counting1 + k] == trees_arr[tree_num_2][j]) {
+							continue;
+						}
+						else
+						{
+							trees_arr[tree_num_1][counting1 + k] = trees_arr[tree_num_2][k];
+							points_count[tree_num_1]++;
+						}
+					}
+					return;
+				}
+				else if (current_line->end_point == trees_arr[tree_num_2][j] && current_line->begin_point == trees_arr[tree_num_1][i]) {
+					trees_arr[tree_num_1][points_count[tree_num_1]] = trees_arr[tree_num_2][j];
+					points_count[tree_num_1]++;
+					for (int k = 0; k < points_count[tree_num_2]; k++) {
+
+						if (trees_arr[tree_num_1][counting1 + k] == trees_arr[tree_num_2][j]) {
+							continue;
+						}
+						else
+						{
+							trees_arr[tree_num_1][counting1 + k] = trees_arr[tree_num_2][k];
+							points_count[tree_num_1]++;
+						}
+					}
+					return;
+				}
+			}
+		}
+	}
+
 
 
 }
