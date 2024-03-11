@@ -59,10 +59,7 @@ void menu() {
 	head = sort(head, x);
 	Line* i = new Line();
 	i = head;
-	while (i != NULL) {
-		cout << i->weight << endl;
-		i = i->Next;
-	}cout << endl;
+	cout << endl;
 	cout << endl;
 	create_trees(head, x);
 	delete_linked_list(head);
@@ -82,7 +79,7 @@ void add_line(Line* line)
 		line->Next = NULL;
 
 	}
-	else if (cin.fail()) {
+	else {
 		cin.clear();
 		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
 		add_line(line);
@@ -199,7 +196,6 @@ Line* sort(Line* line, const int counter) {
 
 void create_trees(Line* head, const int counter) {
 	int tree_num = 0;
-	//head->tree_num = tree_num;
 	Line* current_line = new Line();
 	current_line = head->Next;
 	int trees_arr[TREE_MAX][ARR_MAX];
@@ -214,14 +210,11 @@ void create_trees(Line* head, const int counter) {
 	}
 	trees_arr[tree_num][0] = head->begin_point;
 	trees_arr[tree_num][1] = head->end_point;//drzewo nr 0, pierwsze dwa elementy to punkty heada
-	points_count[tree_num] = 2;//1 i 2
+	points_count[tree_num] = 2;
 	for (int i = 1; i < counter; i++) {
 		compare_trees(head, current_line, trees_arr, tree_num, points_count);
 		current_line = current_line->Next;
 	}
-	/*for (int i = 0; i < points_count[0]; i++) {
-		cout << trees_arr[0][i] << " ";
-	}*/
 	print_trees(head, trees_arr, points_count, counter, tree_num);
 	delete current_line;
 }
@@ -234,22 +227,18 @@ void compare_trees(const Line* head, Line* current_line, int trees_arr[TREE_MAX]
 	for (int i = 0; i <= tree_num; i++) {
 		for (int j = 0; j < points_count[i]; j++) {
 			if (current_line->begin_point == trees_arr[i][j]) {
-				//current_line->tree_num = i;
 				added = true;
 				is_begin = true;
 				int a = is_point_merging(current_line, trees_arr, tree_num, points_count, is_begin);
-				if (a == i) {
+				if (a == i) { //wykluczanie cykli
 					current_line->print = false;
 				}
 				else if (a == -1) {
 					add_point(current_line, trees_arr, points_count, i, which_point);//dodanie do drzewa
 				}
 				else {
-					merge_trees(current_line, trees_arr, points_count, a, i, tree_num);
+					merge_trees(current_line, trees_arr, points_count, a, i, tree_num);//punkt łączy dwa drzewa
 				}
-				//sprawdzenie czy punkt łączy dwa drzewa
-				//tak-merge_trees, nie- dodanie do drzewa
-
 			}
 		}
 	}
@@ -257,12 +246,11 @@ void compare_trees(const Line* head, Line* current_line, int trees_arr[TREE_MAX]
 	if (added == false) {
 		for (int i = 0; i <= tree_num; i++) {
 			for (int j = 0; j < points_count[i]; j++) {
-				if (current_line->end_point == trees_arr[i][j]) {
-					//current_line->tree_num = i; 
+				if (current_line->end_point == trees_arr[i][j]) { 
 					added = true;
 					which_point = true;
 					int a = is_point_merging(current_line, trees_arr, tree_num, points_count, is_begin);
-					if (a == i) {//CYKKLE JEBANE
+					if (a == i) {
 						current_line->print = false;
 					}
 					else if (a == -1) {
@@ -271,25 +259,20 @@ void compare_trees(const Line* head, Line* current_line, int trees_arr[TREE_MAX]
 					else {
 						merge_trees(current_line, trees_arr, points_count, a, i, tree_num);
 					}
-					//sprawdzenie czy punkt łączy dwa drzewa
-					//tak-merge_trees, nie- dodanie do drzewa
-
 				}
 			}
 		}
 	}
-
 	if (added == false) {// tworzenie nowego drzewa
 		tree_num++;
-		//current_line->tree_num = tree_num;
 		trees_arr[tree_num][0] = current_line->begin_point;
-		trees_arr[tree_num][1] = current_line->end_point;//cos ze sztywnymi zmienic?
-		points_count[tree_num] = 2;//do spraawdzenia czy dziala
+		trees_arr[tree_num][1] = current_line->end_point;
+		points_count[tree_num] = 2;
 	}
 }
 
-int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], const int tree_num, int points_count[ARR_MAX], bool is_begin) {//zwraca numer drzewa polaczonego
-	if (is_begin) {//sprawdza end
+int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], const int tree_num, int points_count[ARR_MAX], bool is_begin) { //zwraca numer drzewa polaczonego
+	if (is_begin) { //sprawdza end
 		for (int i = 0; i <= tree_num; i++) {
 			for (int j = 0; j < points_count[i]; j++) {
 				if (current_line->end_point == trees_arr[i][j]) {
@@ -298,7 +281,7 @@ int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], const
 			}
 		}
 	}
-	else {//sprawdza begin
+	else { //sprawdza begin
 		for (int i = 0; i <= tree_num; i++) {
 			for (int j = 0; j < points_count[i]; j++) {
 				if (current_line->begin_point == trees_arr[i][j]) {
@@ -308,7 +291,6 @@ int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], const
 		}
 	}
 	return -1;
-
 }
 
 void delete_tree(int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2, int counting1, int counting2, int& tree_num) {
@@ -343,7 +325,6 @@ void delete_tree(int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], in
 		}
 	}
 	tree_num--;
-
 }
 
 void merge_trees(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2, int& tree_num) {
@@ -457,7 +438,6 @@ void print_trees(Line* line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[
 					cout << "Road from town " << line->begin_point << " to town " << line->end_point << " will cost " << line->weight << ".\n ";
 					sum += line->weight;
 				}
-
 			}
 		}
 		line = line->Next;
@@ -466,5 +446,13 @@ void print_trees(Line* line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[
 }
 
 void delete_linked_list(Line* head) {
-	
+	Line* a = head;
+	Line* b;
+
+	while (a != NULL) {
+		b = a->Next;
+		delete a;
+		a = b;
+	}
+	head = NULL;
 }
