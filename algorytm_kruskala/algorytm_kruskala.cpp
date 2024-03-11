@@ -26,6 +26,7 @@ void add_point(Line*, int[TREE_MAX][ARR_MAX], int[ARR_MAX], int, bool);
 int counter(Line*);
 void delete_tree(int[TREE_MAX][ARR_MAX], int[ARR_MAX], int, int, int, int, int&);
 void print_trees(Line*, int[TREE_MAX][ARR_MAX], int[ARR_MAX], const int, const int);
+void delete_linked_list(Line*);
 
 int main() {
 	welcome();
@@ -64,6 +65,7 @@ void menu() {
 	}cout << endl;
 	cout << endl;
 	create_trees(head, x);
+	delete_linked_list(head);
 }
 
 void add_line(Line* line)
@@ -92,10 +94,25 @@ Line* input_head() {
 	cout << "Input the first line: \n";
 	cout << "Input beginning point: ";
 	cin >> head->begin_point;
+	while (cin.fail() || head->begin_point < 0) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		cin >> head->begin_point;
+	}
 	cout << "Input ending point: ";
 	cin >> head->end_point;
+	while (cin.fail() || head->end_point < 0) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		head->end_point;
+	}
 	cout << "Input weight of the line: ";
 	cin >> head->weight;
+	while (cin.fail() || head->weight < 0 ) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		cin >> head->weight;
+	}
 	cout << endl;
 	return head;
 }
@@ -105,10 +122,25 @@ Line* create_line(Line* line) {
 	cout << "\nInput the next line: \n";
 	cout << "Input beginning point: ";
 	cin >> new_line->begin_point;
+	while (cin.fail() || new_line->begin_point < 0) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		cin >> new_line->begin_point;
+	}
 	cout << "Input ending point: ";
 	cin >> new_line->end_point;
+	while (cin.fail() || new_line->end_point < 0) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		cin >> new_line->end_point;
+	}
 	cout << "Input weight of the line: ";
 	cin >> new_line->weight;
+	while (cin.fail() || new_line->weight < 0) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		cin >> new_line->weight;
+	}
 	cout << endl;
 	line->Next = new_line;
 	return new_line;
@@ -191,6 +223,7 @@ void create_trees(Line* head, const int counter) {
 		cout << trees_arr[0][i] << " ";
 	}*/
 	print_trees(head, trees_arr, points_count, counter, tree_num);
+	delete current_line;
 }
 
 void compare_trees(const Line* head, Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int& tree_num, int points_count[ARR_MAX]) {
@@ -430,4 +463,8 @@ void print_trees(Line* line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[
 		line = line->Next;
 	}
 	cout << "The cheapest railway network will cost: " << sum << endl;
+}
+
+void delete_linked_list(Line* head) {
+	
 }
