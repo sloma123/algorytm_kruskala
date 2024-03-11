@@ -76,33 +76,40 @@ void add_line(Line* line)
 		add_line(line);
 	}
 	else if (answer == 2) {
+		cout << endl;
 		line->Next = NULL;
 
 	}
-	else add_line(line);
+	else if (cin.fail()) {
+		cin.clear();
+		cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+		add_line(line);
+	}
 }
 
 Line* input_head() {
 	Line* head = new Line();
-	cout << "Input the first line: ";
-	cout << "\nInput beginning point: ";
+	cout << "Input the first line: \n";
+	cout << "Input beginning point: ";
 	cin >> head->begin_point;
-	cout << "\nInput ending point: ";
+	cout << "Input ending point: ";
 	cin >> head->end_point;
-	cout << "\nInput weight of the line: ";
+	cout << "Input weight of the line: ";
 	cin >> head->weight;
+	cout << endl;
 	return head;
 }
 
 Line* create_line(Line* line) {
 	Line* new_line = new Line();
-	cout << "\nInput the next line: ";
-	cout << "\nInput beginning point: ";
+	cout << "\nInput the next line: \n";
+	cout << "Input beginning point: ";
 	cin >> new_line->begin_point;
-	cout << "\nInput ending point: ";
+	cout << "Input ending point: ";
 	cin >> new_line->end_point;
-	cout << "\nInput weight of the line: ";
+	cout << "Input weight of the line: ";
 	cin >> new_line->weight;
+	cout << endl;
 	line->Next = new_line;
 	return new_line;
 }
@@ -160,7 +167,6 @@ Line* sort(Line* line, const int counter) {
 
 void create_trees(Line* head, const int counter) {
 	int tree_num = 0;
-	int sum = 0;
 	//head->tree_num = tree_num;
 	Line* current_line = new Line();
 	current_line = head->Next;
@@ -177,7 +183,6 @@ void create_trees(Line* head, const int counter) {
 	trees_arr[tree_num][0] = head->begin_point;
 	trees_arr[tree_num][1] = head->end_point;//drzewo nr 0, pierwsze dwa elementy to punkty heada
 	points_count[tree_num] = 2;//1 i 2
-	sum += head->weight;
 	for (int i = 1; i < counter; i++) {
 		compare_trees(head, current_line, trees_arr, tree_num, points_count);
 		current_line = current_line->Next;
@@ -273,16 +278,16 @@ int is_point_merging(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], const
 
 }
 
-void delete_tree(int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2,int counting1, int counting2, int &tree_num){
-	if(tree_num_1 > tree_num_2)
+void delete_tree(int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2, int counting1, int counting2, int& tree_num) {
+	if (tree_num_1 > tree_num_2)
 	{
-		for (int j = 0; j < counting1 ; j++) {
+		for (int j = 0; j < counting1; j++) {
 			trees_arr[tree_num_1][j] = trees_arr[tree_num_1 + 1][j];
-		}	
+		}
 		points_count[tree_num_1] = points_count[tree_num_1 + 1];
-		if(tree_num>tree_num_1){
-			for(int i = tree_num_1 + 1; i<=tree_num; i++){
-				for(int j=0; j < points_count[i + 1]; j++){
+		if (tree_num > tree_num_1) {
+			for (int i = tree_num_1 + 1; i <= tree_num; i++) {
+				for (int j = 0; j < points_count[i + 1]; j++) {
 					trees_arr[i][j] = trees_arr[i + 1][j];
 				}
 				points_count[i] = points_count[i + 1];
@@ -305,10 +310,10 @@ void delete_tree(int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], in
 		}
 	}
 	tree_num--;
-	
+
 }
 
-void merge_trees(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2, int &tree_num) {
+void merge_trees(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], int tree_num_1, int tree_num_2, int& tree_num) {
 
 	int counting2 = points_count[tree_num_2];
 	int counting1 = points_count[tree_num_1];
@@ -410,16 +415,19 @@ void add_point(Line* current_line, int trees_arr[TREE_MAX][ARR_MAX], int points_
 
 void print_trees(Line* line, int trees_arr[TREE_MAX][ARR_MAX], int points_count[ARR_MAX], const int counter, const int tree_num) {
 
+	int sum = 0;;
 	for (int i = 0; i < counter; i++) {
 		for (int a = 0; a <= tree_num; a++) {
 			for (int b = 0; b < points_count[a]; b++) {
 				if (line->begin_point == trees_arr[a][b] && line->print == true)
 				{
-					cout << line->begin_point << " " << line->end_point <<" "<< line->weight << endl;
+					cout << "Road from town " << line->begin_point << " to town " << line->end_point << " will cost " << line->weight << ".\n ";
+					sum += line->weight;
 				}
-				
+
 			}
 		}
 		line = line->Next;
 	}
+	cout << "The cheapest railway network will cost: " << sum << endl;
 }
